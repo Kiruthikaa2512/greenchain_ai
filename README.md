@@ -103,7 +103,7 @@ The platform aggregates all modules into a single **Sustainability Index**, help
 
 ---
 
-#  **Why This Matters (EB1A-style Societal Impact Framing)**
+#  **Why This Matters**
 
 GreenChain AI democratizes sustainability intelligence:
 
