@@ -1,4 +1,6 @@
-# **GreenChain-AI: Sustainable Supply Chain Intelligence**
+# **GreenChain AI — Sustainable Supply Chain Intelligence**
+**Author:** Kiruthikaa Natarajan Srinivasan  
+**Date:** November 24, 2025  
 
 ## **Overview**
 

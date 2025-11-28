@@ -1,8 +1,12 @@
 # **GreenChain AI — Sustainable Supply Chain Intelligence**
+**Author:** Kiruthikaa Natarajan Srinivasan  
+**Date:** November 18, 2025  
 
 **Live App:** [https://greenchainai.streamlit.app](https://greenchainai.streamlit.app)
 **Repository:** [https://github.com/Kiruthikaa2512/Greenchain_AI](https://github.com/Kiruthikaa2512/Greenchain_AI)
 
+
+**Project Overview:**
 GreenChain AI is a unified sustainability intelligence platform designed to evaluate the environmental impact of end-to-end supply chain operations in real time. It converts route emissions, demand planning accuracy, supplier ESG maturity, and warehouse energy usage into a single, interpretable sustainability index (0–100).
 The goal: **help businesses make greener, smarter, and more responsible supply-chain decisions.**
 
