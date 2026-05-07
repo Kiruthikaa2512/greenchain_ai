@@ -5,7 +5,15 @@ import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.linear_model import LinearRegression
 import networkx as nx
+from google import genai
 from io import BytesIO
+
+client = genai.Client(
+    api_key=st.secrets["GOOGLE_API_KEY"]
+)
+
+for model in client.models.list():
+    print(model.name)
 
 # PDF generation
 try:
@@ -449,6 +457,61 @@ def compute_overall_sustainability_score(
     return format_score(overall)
 
 
+
+# -------------------------
+# GEMMA AI SUSTAINABILITY ADVISOR
+# -------------------------
+def generate_sustainability_advice(
+    transport_score_value: float,
+    waste_score_value: float,
+    supplier_score_value: float,
+    warehouse_score_value: float,
+    overall_score_value: float,
+) -> str:
+    """
+    Uses real Gemma via Google GenAI API to generate sustainability recommendations.
+    Includes fallback text if API is unavailable.
+    """
+
+    prompt = f"""
+    You are a sustainability and supply chain audit advisor.
+
+    Analyze the following GreenChain AI scores:
+    - Overall Sustainability Index: {overall_score_value}/100
+    - Transport Score: {transport_score_value}/100
+    - Waste and Forecasting Score: {waste_score_value}/100
+    - Supplier Sustainability Score: {supplier_score_value}/100
+    - Warehouse Energy Score: {warehouse_score_value}/100
+
+    Provide:
+    1. Key business risk
+    2. Suggested operational recommendation
+    3. Sustainability impact
+    4. Executive summary
+
+    Keep the response concise, practical, and business-friendly.
+    """
+
+    try:
+        response = client.models.generate_content(
+            model="gemma-4-31b-it",
+            contents=prompt,
+        )
+        return response.text
+
+    except Exception as e:
+        return f"""
+### Gemma AI Recommendation Fallback
+
+Gemma API could not be reached during this run.
+
+**Reason:** {e}
+
+**Local Sustainability Recommendation:**  
+Focus first on the lowest scoring area among transport, waste, supplier, and warehouse operations. Improve route efficiency, reduce overstock, strengthen supplier ESG transparency, and optimize warehouse energy consumption.
+"""
+
+
 # -------------------------
 # PDF REPORT GENERATION
 # -------------------------
@@ -483,7 +546,7 @@ def generate_pdf_report(summary: dict) -> BytesIO:
 # SIDEBAR
 # -------------------------
 with st.sidebar:
-    st.markdown("### 🌱 GreenChain AI")
+    st.markdown("### GreenChain AI")
     st.markdown(
         """
         <p style="font-size:0.85rem; opacity:0.9;">
@@ -588,6 +651,27 @@ if section == "Overview":
         """,
         unsafe_allow_html=True,
     )
+
+
+
+    # Gemma Advisor shown on Overview page
+    st.markdown('<div class="gc-card">', unsafe_allow_html=True)
+    st.subheader("🌱 Gemma AI Sustainability Advisor")
+    st.write(
+        "Click the button below to generate an executive-style sustainability recommendation based on the current GreenChain AI scores."
+    )
+
+    if st.button("Generate AI Recommendations", key="overview_gemma_button"):
+        advice = generate_sustainability_advice(
+            st.session_state["transport_score"],
+            st.session_state["waste_score"],
+            st.session_state["supplier_score"],
+            st.session_state["warehouse_score"],
+            overall,
+        )
+        st.markdown(advice)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     radar_df = pd.DataFrame(
         {
@@ -1240,14 +1324,23 @@ elif section == "Download Report":
         unsafe_allow_html=True,
     )
 
+    # Optional Gemma Advisor inside Download Report page too
+    advisor_recommendations = generate_sustainability_advice(
+    st.session_state["transport_score"],
+    st.session_state["waste_score"],
+    st.session_state["supplier_score"],
+    st.session_state["warehouse_score"],
+    overall,
+)
     summary = {
         "Overall Sustainability Index": f"{overall} / 100",
         "Transport Score": f"{st.session_state['transport_score']} / 100",
         "Waste & Forecast Score": f"{st.session_state['waste_score']} / 100",
         "Supplier Sustainability Score": f"{st.session_state['supplier_score']} / 100",
         "Warehouse Sustainability Score": f"{st.session_state['warehouse_score']} / 100",
+        "Gemma AI Business Recommendations": advisor_recommendations,
     }
-
+ 
     st.markdown('<div class="gc-card">', unsafe_allow_html=True)
     st.json(summary)
 
@@ -1278,5 +1371,5 @@ elif section == "Download Report":
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.info(
-        "You can share this report with your business team to generate actionable insights"
+        "You can share this report with your business team to generate actionable insights."
     )
