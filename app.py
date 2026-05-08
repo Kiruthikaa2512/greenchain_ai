@@ -499,13 +499,11 @@ def generate_sustainability_advice(
         )
         return response.text
 
-    except Exception as e:
-        return f"""
-### Gemma AI Recommendation Fallback
+    except Exception:
+        return """
+### Sustainability Recommendation
 
-Gemma API could not be reached during this run.
-
-**Reason:** {e}
+Gemma-powered advisory is temporarily unavailable, so GreenChain AI is using its local fallback advisor for this run.
 
 **Local Sustainability Recommendation:**  
 Focus first on the lowest scoring area among transport, waste, supplier, and warehouse operations. Improve route efficiency, reduce overstock, strengthen supplier ESG transparency, and optimize warehouse energy consumption.
