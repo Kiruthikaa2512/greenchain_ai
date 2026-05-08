@@ -662,14 +662,16 @@ if section == "Overview":
     )
 
     if st.button("Generate AI Recommendations", key="overview_gemma_button"):
-        advice = generate_sustainability_advice(
+        with st.spinner("Gemma is analyzing your sustainability metrics..."):
+            advice = generate_sustainability_advice(
             st.session_state["transport_score"],
             st.session_state["waste_score"],
             st.session_state["supplier_score"],
             st.session_state["warehouse_score"],
             overall,
         )
-        st.markdown(advice)
+
+    st.markdown(advice)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
