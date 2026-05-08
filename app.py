@@ -8,12 +8,12 @@ import networkx as nx
 from google import genai
 from io import BytesIO
 
-client = genai.Client(
-    api_key=st.secrets["GOOGLE_API_KEY"]
-)
-
-for model in client.models.list():
-    print(model.name)
+# Create the Google GenAI client safely.
+# The API key is stored in Streamlit secrets in production and never committed to GitHub.
+try:
+    client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
+except Exception:
+    client = None
 
 # PDF generation
 try:
@@ -469,28 +469,43 @@ def generate_sustainability_advice(
     overall_score_value: float,
 ) -> str:
     """
-    Uses real Gemma via Google GenAI API to generate sustainability recommendations.
-    Includes fallback text if API is unavailable.
+    Uses real Gemma 4 through the Google GenAI API to generate sustainability
+    recommendations from the unified GreenChain AI sustainability profile.
+
+    A local fallback is included so the deployed demo remains usable if the API
+    is temporarily unavailable.
     """
 
     prompt = f"""
-    You are a sustainability and supply chain audit advisor.
+    You are a senior sustainability and supply-chain audit advisor.
 
-    Analyze the following GreenChain AI scores:
+    Analyze the following GreenChain AI sustainability profile:
     - Overall Sustainability Index: {overall_score_value}/100
     - Transport Score: {transport_score_value}/100
     - Waste and Forecasting Score: {waste_score_value}/100
     - Supplier Sustainability Score: {supplier_score_value}/100
     - Warehouse Energy Score: {warehouse_score_value}/100
 
-    Provide:
-    1. Key business risk
-    2. Suggested operational recommendation
-    3. Sustainability impact
-    4. Executive summary
+    Your task:
+    1. Identify the most important business sustainability risk.
+    2. Recommend one practical operational improvement.
+    3. Explain the sustainability impact. Keep the response concise, practical, and business-friendly.
+    Do not include today's date or any calendar date in the response.
+    4. Provide a concise executive summary.
 
-    Keep the response concise, practical, and business-friendly.
+    Keep the response practical, grounded in the provided scores, and suitable
+    for an operations or ESG leadership team.
     """
+
+    if client is None:
+        return """
+### Sustainability Recommendation
+
+Gemma-powered advisory is temporarily unavailable because the API client is not configured. GreenChain AI is using its local fallback advisor for this run.
+
+**Local Sustainability Recommendation:**  
+Focus first on the lowest scoring area among transport, waste, supplier, and warehouse operations. Improve route efficiency, reduce overstock, strengthen supplier ESG transparency, and optimize warehouse energy consumption.
+"""
 
     try:
         response = client.models.generate_content(
@@ -509,6 +524,35 @@ Gemma-powered advisory is temporarily unavailable, so GreenChain AI is using its
 Focus first on the lowest scoring area among transport, waste, supplier, and warehouse operations. Improve route efficiency, reduce overstock, strengthen supplier ESG transparency, and optimize warehouse energy consumption.
 """
 
+
+def render_gemma_audit_trace():
+    """Explainability layer for the Gemma recommendation workflow."""
+    with st.expander("🔍 Gemma Audit Trace — how the recommendation is grounded"):
+        st.markdown(
+            """
+            **1. Metric intake:** GreenChain AI collects the latest transport, waste, supplier, and warehouse sustainability scores.  
+            **2. Weakness detection:** The lowest scoring areas are treated as priority operational risk signals.  
+            **3. Cross-functional reasoning:** Gemma 4 evaluates trade-offs across emissions, waste, ESG transparency, and energy efficiency.  
+            **4. Executive synthesis:** Gemma 4 converts the score profile into business-ready sustainability recommendations.  
+            **5. Fallback reliability:** If the API is temporarily unavailable, GreenChain AI provides a local recommendation so the demo remains usable.
+            """
+        )
+
+
+def render_gemma_module_note(module_name: str, note: str):
+    """Small non-invasive Gemma context card for module pages."""
+    st.markdown(
+        f"""
+        <div class="gc-card">
+            <div class="gc-pill">Gemma 4 Context Layer</div>
+            <h4 style="margin-top:0.6rem;">🤖 Gemma-aware insight: {module_name}</h4>
+            <p style="font-size:0.9rem; opacity:0.9;">
+                {note}
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # -------------------------
 # PDF REPORT GENERATION
@@ -574,7 +618,7 @@ with st.sidebar:
     st.markdown(
         """
         <div style="margin-top:2rem; font-size:0.75rem; opacity:0.7;">
-        Built for <b>Aethra Global Vibeathon 2025</b><br/>
+        Powered by <b>Gemma 4</b><br/>
         Theme: <i>Sustainable Supply Chain Intelligence</i>
         </div>
         """,
@@ -595,6 +639,8 @@ if "supplier_score" not in st.session_state:
     st.session_state["supplier_score"] = 80.0
 if "warehouse_score" not in st.session_state:
     st.session_state["warehouse_score"] = 72.0
+if "gemma_advice" not in st.session_state:
+    st.session_state["gemma_advice"] = None
 
 overall = compute_overall_sustainability_score(
     st.session_state["transport_score"],
@@ -607,10 +653,10 @@ if section == "Overview":
     st.markdown(
         """
         <div class="gc-card">
-            <div class="gc-pill">Live Sustainability Navigator</div>
+            <div class="gc-pill">Gemma 4 · Sustainable Supply Chain Intelligence</div>
             <h1 style="margin-top:0.6rem;">GreenChain AI</h1>
             <p style="font-size:0.95rem; opacity:0.9;">
-            A supply-chain & data-analytics assistant that turns routes, demand, supplier ESG and warehouse energy into a single sustainability signal.
+            A Gemma-powered sustainability intelligence platform that turns routes, demand, supplier ESG and warehouse energy into executive-ready operational recommendations.
             </p>
         </div>
         """,
@@ -660,22 +706,25 @@ if section == "Overview":
 
     # Gemma Advisor shown on Overview page
     st.markdown('<div class="gc-card">', unsafe_allow_html=True)
-    st.subheader("🌱 Gemma AI Sustainability Advisor")
+    st.subheader("🌱 Gemma 4 Executive Sustainability Auditor")
     st.write(
-        "Click the button below to generate an executive-style sustainability recommendation based on the current GreenChain AI scores."
+        "Gemma 4 analyzes the combined transport, waste, supplier, and warehouse sustainability scores "
+        "to generate executive recommendations from the full supply-chain profile."
     )
 
-if st.button("Generate AI Recommendations", key="overview_gemma_button"):
-    with st.spinner("Gemma is analyzing your sustainability metrics..."):
-        advice = generate_sustainability_advice(
-            st.session_state["transport_score"],
-            st.session_state["waste_score"],
-            st.session_state["supplier_score"],
-            st.session_state["warehouse_score"],
-            overall,
-        )
+    if st.button("Generate Gemma 4 Sustainability Recommendations", key="overview_gemma_button"):
+        with st.spinner("Gemma 4 is analyzing your sustainability metrics..."):
+            st.session_state["gemma_advice"] = generate_sustainability_advice(
+                st.session_state["transport_score"],
+                st.session_state["waste_score"],
+                st.session_state["supplier_score"],
+                st.session_state["warehouse_score"],
+                overall,
+            )
 
-        st.markdown(advice)
+    if st.session_state["gemma_advice"]:
+        st.markdown(st.session_state["gemma_advice"])
+        render_gemma_audit_trace()
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -877,6 +926,11 @@ elif section == "Transportation & Routing":
         "significantly reduces last-mile emissions."
     )
 
+    render_gemma_module_note(
+        "Transportation & Routing",
+        "This module feeds route distance, vehicle selection, utilization, and emissions signals into the unified profile that Gemma 4 uses for executive sustainability recommendations."
+    )
+
 
 # ---------- Demand & Waste Forecasting ----------
 elif section == "Demand & Waste Forecasting":
@@ -1027,6 +1081,11 @@ elif section == "Demand & Waste Forecasting":
         "factor can significantly reduce waste and excess emissions from overproduction."
     )
 
+    render_gemma_module_note(
+        "Demand & Waste Forecasting",
+        "This module contributes demand planning and overstock risk signals so Gemma 4 can connect waste reduction with operational and sustainability impact."
+    )
+
 # ---------- Supplier Sustainability ----------
 elif section == "Supplier Sustainability":
     st.markdown(
@@ -1164,6 +1223,11 @@ elif section == "Supplier Sustainability":
     st.info(
         "💡 *Insight:* Weighted, role-based scoring makes supplier evaluation more transparent and "
         "aligned with sustainability and resilience goals."
+    )
+
+    render_gemma_module_note(
+        "Supplier Sustainability",
+        "This module provides ESG, quality, delivery, and emissions-transparency context that Gemma 4 uses to reason about supplier accountability and resilience."
     )
 
 # ---------- Warehouse Energy & Ops ----------
@@ -1307,6 +1371,11 @@ elif section == "Warehouse Energy & Ops":
         "material handling equipment can materially reduce energy consumption and emissions."
     )
 
+    render_gemma_module_note(
+        "Warehouse Energy & Ops",
+        "This module adds energy efficiency and facility operations signals to the sustainability profile that Gemma 4 converts into executive recommendations."
+    )
+
 # ---------- Download Report ----------
 elif section == "Download Report":
     overall = compute_overall_sustainability_score(
@@ -1330,14 +1399,13 @@ elif section == "Download Report":
         unsafe_allow_html=True,
     )
 
-    # Optional Gemma Advisor inside Download Report page too
-    advisor_recommendations = generate_sustainability_advice(
-    st.session_state["transport_score"],
-    st.session_state["waste_score"],
-    st.session_state["supplier_score"],
-    st.session_state["warehouse_score"],
-    overall,
-)
+    # Use the latest generated Gemma recommendation in the downloadable summary.
+    # This avoids triggering a slow API call automatically when the report page opens.
+    advisor_recommendations = st.session_state.get(
+        "gemma_advice",
+        "Generate recommendations from the Overview page to include Gemma 4 executive guidance in this report."
+    )
+
     summary = {
         "Overall Sustainability Index": f"{overall} / 100",
         "Transport Score": f"{st.session_state['transport_score']} / 100",
