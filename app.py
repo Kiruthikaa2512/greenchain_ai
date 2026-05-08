@@ -494,7 +494,7 @@ def generate_sustainability_advice(
 
     try:
         response = client.models.generate_content(
-            model="gemma-4-31b-it",
+            model="gemma-4-26b-a4b-it",
             contents=prompt,
         )
         return response.text
