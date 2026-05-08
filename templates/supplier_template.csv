@@ -1,0 +1,4 @@
+supplier,on_time_delivery,esg_score,quality_score,emission_transparency
+Supplier A,0.96,0.82,0.90,0.85
+Supplier B,0.88,0.78,0.86,0.65
+Supplier C,0.92,0.91,0.88,0.90

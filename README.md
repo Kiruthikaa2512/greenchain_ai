@@ -1,8 +1,9 @@
-# **GreenChain AI — Sustainable Supply Chain Intelligence**
+ **GreenChain AI — Gemma-Powered Sustainability Intelligence for Resilient Supply Chains**
 **Author:** Kiruthikaa Natarajan Srinivasan  
-**Date:** November 18, 2025  
+ 
 
 **Live App:** [https://greenchainai.streamlit.app](https://greenchainai.streamlit.app)
+**Powered By:** Gemma 4 + Streamlit + Python
 **Repository:** [https://github.com/Kiruthikaa2512/Greenchain_AI](https://github.com/Kiruthikaa2512/Greenchain_AI)
 
 
@@ -162,8 +163,29 @@ Automatic downloadable sustainability summary including:
 * **Streamlit Cloud** — Direct GitHub integration
 
 ---
+## **4. Gemma 4 Integration**
 
-## **4. Why This Matters**
+GreenChain AI integrates the Gemma 4 model through the Google GenAI API to transform operational sustainability metrics into executive-style sustainability recommendations.
+
+Rather than displaying raw sustainability scores alone, Gemma 4 interprets transportation emissions, supplier ESG metrics, warehouse efficiency indicators, and waste forecasting outputs to generate actionable operational insights.
+
+### Gemma 4 Capabilities Used
+
+- Sustainability recommendation generation
+- Operational reasoning from structured metrics
+- Executive-level natural language summaries
+- AI-assisted decision support
+
+### Example Workflow
+
+1. User uploads or generates sustainability data
+2. GreenChain AI computes operational sustainability metrics
+3. Gemma 4 analyzes the aggregated sustainability profile
+4. Executive recommendations are generated in real time
+
+A local fallback recommendation system is also included to ensure graceful degradation during API latency or service interruptions.
+
+## **5. Why This Matters**
 
 Most sustainability tools in supply chain analytics are:
 
@@ -184,7 +206,20 @@ This democratizes sustainability analytics for both small and large organization
 
 ---
 
-## **5. Installation & Local Execution**
+## **6. Real-World Impact**
+
+GreenChain AI was designed to demonstrate how AI-powered sustainability analytics can support operational resilience and climate-conscious logistics decision-making.
+
+The platform helps organizations:
+- identify high-emission operational areas,
+- reduce avoidable transportation waste,
+- improve supplier sustainability visibility,
+- optimize warehouse energy efficiency,
+- and transform fragmented sustainability metrics into actionable operational intelligence.
+
+By combining sustainability analytics with Gemma 4 reasoning, GreenChain AI demonstrates how AI can support more responsible and resilient global supply chains.
+
+## **7. Installation & Local Execution**
 
 ### **Clone the repository**
 
@@ -215,7 +250,7 @@ streamlit run app.py
 
 ---
 
-## **6. CSV Templates**
+## **8. CSV Templates**
 
 Templates are included to help users understand expected formats.
 
@@ -228,7 +263,19 @@ Templates are included to help users understand expected formats.
 
 ---
 
-## **7. Architecture**
+## **9. Architecture**
+
+User Inputs / CSV Uploads
+        ↓
+GreenChain Analytics Engine
+        ↓
+Sustainability Scoring Modules
+        ↓
+Gemma 4 Recommendation Layer
+        ↓
+Executive Sustainability Insights
+        ↓
+PDF Report Generation
 
 ```
 ├── app.py
@@ -247,9 +294,34 @@ Templates are included to help users understand expected formats.
 └── README.md
 ```
 
+## **10. Screenshots**
+
+### Overview Dashboard
+![Overview Dashboard](screenshots/overview.png)
+![Overview Dashboard](screenshots/overview2.png)
+
+### Transportation & Routing
+![Transportation](screenshots/transportation.png)
+![Transportation](screenshots/transportation2.png)
+
+### Demand & Waste Forecasting
+![Waste Forecasting](screenshots/demand.png)
+![Waste Forecasting](screenshots/demand2.png)
+
+### Warehouse Energy Operations
+![Warehouse Energy](screenshots/Whse.png)
+![Warehouse Energy](screenshots/Whse2.png)
+
+### Download Report
+![Download Report](screenshots/download.png)
+
+
+### Gemma 4 Executive Sustainability Auditor
+![Gemma Recommendation](screenshots/gemma_output.png)
+
 ---
 
-## **8. What Was Hard**
+## **11. What Was Hard**
 
 * Building a unified scoring model that feels intuitive
 * Ensuring CSV uploads gracefully handle errors
@@ -259,15 +331,15 @@ Templates are included to help users understand expected formats.
 
 ---
 
-## **9. What Surprised Me**
+## **12. What Surprised Me**
 
 * How well simple forecasting models work for waste prediction
 * How emissions change drastically based on small routing decisions
-* How accessible sustainability becomes when visualized properly
+* How sustainability decision-making becomes more actionable when operational data is visualized clearly.
 
 ---
 
-## **10. Future Roadmap**
+## **13. Future Roadmap**
 
 * AI-powered route optimization
 * Real-time CO₂ emission APIs
@@ -278,7 +350,7 @@ Templates are included to help users understand expected formats.
 
 ---
 
-## **11. License**
+## **14. License**
 
 MIT License.
 
