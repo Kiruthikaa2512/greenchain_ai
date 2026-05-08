@@ -596,6 +596,12 @@ if "supplier_score" not in st.session_state:
 if "warehouse_score" not in st.session_state:
     st.session_state["warehouse_score"] = 72.0
 
+overall = compute_overall_sustainability_score(
+    st.session_state["transport_score"],
+    st.session_state["waste_score"],
+    st.session_state["supplier_score"],
+    st.session_state["warehouse_score"],
+)
 # ---------- Overview ----------
 if section == "Overview":
     st.markdown(
