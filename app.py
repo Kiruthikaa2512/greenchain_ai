@@ -661,9 +661,9 @@ if section == "Overview":
         "Click the button below to generate an executive-style sustainability recommendation based on the current GreenChain AI scores."
     )
 
-    if st.button("Generate AI Recommendations", key="overview_gemma_button"):
-        with st.spinner("Gemma is analyzing your sustainability metrics..."):
-            advice = generate_sustainability_advice(
+if st.button("Generate AI Recommendations", key="overview_gemma_button"):
+    with st.spinner("Gemma is analyzing your sustainability metrics..."):
+        advice = generate_sustainability_advice(
             st.session_state["transport_score"],
             st.session_state["waste_score"],
             st.session_state["supplier_score"],
@@ -671,7 +671,7 @@ if section == "Overview":
             overall,
         )
 
-    st.markdown(advice)
+        st.markdown(advice)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
