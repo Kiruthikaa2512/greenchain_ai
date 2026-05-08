@@ -515,7 +515,7 @@ Focus first on the lowest scoring area among transport, waste, supplier, and war
         return response.text
 
     except Exception:
-    return """
+        return """
 ## 🌱 GreenChain AI Executive Sustainability Summary
 
 GreenChain AI has generated a local sustainability assessment using its embedded operational intelligence layer.
