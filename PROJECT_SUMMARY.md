@@ -10,6 +10,7 @@
 **GreenChain AI** is a unified sustainability intelligence system designed to help organizations measure and mitigate environmental impact across global supply chains. While modern supply chains generate the majority of corporate emissions, data is often scattered and unactionable. 
 
 GreenChain AI solves this by unifying transportation, forecasting, supplier ESG, and warehouse data into a single intelligence layer. Powered by **Gemma 4**, the platform provides **Grounded Reasoning** to explain how operational decisions influence long-term resilience and carbon outcomes.
+
 ---
 
 ## 🛠️ What the Project Does
